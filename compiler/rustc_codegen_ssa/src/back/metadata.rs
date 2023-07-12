@@ -138,7 +138,12 @@ fn add_gnu_property_note(
         _ => unreachable!(),
     };
     let pr_datasz: u32 = 4; //size of the pr_data field
-    let pr_data: u32 = 3; //program property descriptor
+    let pr_data: u32 = match architecture {
+        Architecture::X86_64 => object::elf::GNU_PROPERTY_X86_FEATURE_1_IBT | object::elf::GNU_PROPERTY_X86_FEATURE_1_SHSTK,
+        Architecture::Aarch64 => object::elf::GNU_PROPERTY_AARCH64_FEATURE_1_BTI | object::elf::GNU_PROPERTY_AARCH64_FEATURE_1_PAC,
+        _ => unreachable!(),
+    };//program property descriptor
+
     let pr_padding: u32 = 0;
     let property_values = [pr_type, pr_datasz, pr_data, pr_padding];
     property_values.iter().for_each(|v| {
